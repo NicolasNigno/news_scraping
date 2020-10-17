@@ -64,11 +64,11 @@ for url in tqdm(urls):
         subtitulos.append(None)
         originals.append(url)
     
-    time.sleep(5)
+    #time.sleep(5)
         
         
 df = pd.DataFrame(list(zip(titulos, fechas, temas, autores, subtitulos, articulos, originals)),
                   columns =['titulos', 'fechas', 'temas', 'autores', 'subtitulos', 'articulos', 'url'])
 
 
-df.to_excel('larepublica.xlsx', index=False)
+df.to_excel(r'data\larepublica.xlsx', index=False)
