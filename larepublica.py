@@ -71,5 +71,4 @@ df = pd.DataFrame(list(zip(titulos, fechas, temas, autores, subtitulos, articulo
                   columns =['titulos', 'fechas', 'temas', 'autores', 'subtitulos', 'articulos', 'url'])
 
 
-df.to_csv('larepublica.csv', index=False, encoding='utf-16', sep='|')
 df.to_excel('larepublica.xlsx', index=False)
