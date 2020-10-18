@@ -1,28 +1,40 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Oct 17 18:20:38 2020
-
-@author: nicol
-"""
-
-from bs4 import BeautifulSoup
 from selenium import webdriver
-import requests
 import pandas as pd
-from tqdm import tqdm
 import time
+from bs4 import BeautifulSoup
+import requests
+from tqdm import tqdm
 
 
-url = 'https://www.larepublica.co/economia'
-r = requests.get(url, timeout=30)
-soup = BeautifulSoup(r.text, 'html.parser')
+browser = webdriver.Chrome(executable_path=r'C:\Users\nicol\Downloads\chromedriver.exe') ## path quemado
 
-urls = []
-articulos = soup.find('div', {'class': 'container section sect-economia'})
-for a in articulos.find_all('a', href=True):
-    urls.append(a['href'])
+url = 'https://www.larepublica.co/buscar?term=banco+de+la+republica'
+# url = 'https://www.larepublica.co/buscar?term=banco+de+la+republica&from={}T00%3A00%3A00-05%3A00&to={}T00%3A00%3A00-05%3A00'.format('2020-08-01', '2020-11-01')
 
-urls = list(set(urls))
+browser.get(url)
+time.sleep(5)
+
+try:
+    path_search = r"//*[@id='vue-container']/div[2]/div[2]/div[2]/div/div/button"
+    elem = browser.find_element_by_xpath(path_search)
+    more = True
+except:
+    more = False
+
+while more:
+    elem.click()
+    try:
+        elem = browser.find_element_by_xpath(path_search)
+        more = True
+    except:
+        more = False
+
+
+container = browser.find_element_by_xpath('//*[@id="sticky-anchor-1"]')
+articulos = container.find_elements_by_xpath(".//a")
+urls = [articulo.get_attribute('href') for articulo in articulos]
+
+browser.quit()
 
 titulos = []
 articulos = []
@@ -37,7 +49,7 @@ for url in tqdm(urls):
     soup = BeautifulSoup(r.text, 'html.parser')
     
     try:
-        header = soup.find('div', {'class': 'col-8 order-2 d-flex flex-column'})
+        header = soup.find('div', {'class': 'col-8 order-2 d-flex flex-column'}) ## classic header 
         article = soup.find('div', {'id': 'proportional-anchor-1'})
         
         autor = article.find('div', {'class': 'autorArticle'}).text.strip()
